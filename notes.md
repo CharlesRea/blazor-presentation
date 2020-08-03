@@ -52,9 +52,26 @@ approach, and get an understanding of when it makes sense to use Blazor.
 
 
 ### Let's take a look at it in action
-* Basic demo, showing compontent-based UI, basic component state, rendering
-* Hello world example: click a button, show an alert / log to console?
-* Or counter? Shows state, events, components
+QQ - strip down demo:
+* Don't render counter by default
+
+* Here's a basic Blazor hello world component
+* Blazor is a component-based framework - so you build up a set of components, eg buttons, form inputs, together into your UI
+* Components are written in `.razor` files
+* Uses the Razor templating language - same as in server side MVC, if you've seen that before
+* Write HTML, but can inject in C# using the `@` symbol
+* Blazor compnonents can have the `@code` block - this is where you define actual logic - state, event handlers, lifecycle methods, business logic, etc
+* This is all compiled down to a C# class
+
+* *Demo running the site - show the demo loading*
+
+* Can compose components. E.g. let's render my Counter component
+* *Add `<Counter />` to index*
+* My counter component maintains some internal state. See how we can bind a method to a DOM event, in this case the onClick event
+* This updates the state, and causes the component to be re-rendered.
+* *Demo Counter*
+
+* Components can have input parameters set - e.g. we could allow customising the Increment amount
 
 
 ### More complicated demo
