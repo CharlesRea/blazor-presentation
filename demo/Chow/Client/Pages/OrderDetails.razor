@@ -1,0 +1,35 @@
+@using Chow.Shared
+@using System.Runtime.CompilerServices
+@inject HttpClient HttpClient
+
+<EditForm Model="Order" OnValidSubmit="@OnValidSubmit">
+  <DataAnnotationsValidator />
+  <label>Your name:
+    <InputText @bind-Value="@Order.CustomerName" />
+  </label>
+  <ValidationMessage For="@(() => Order.CustomerName)" />
+  <label>
+    Your address:
+    <InputText @bind-Value="@Order.CustomerAddress" />
+  </label>
+  <ValidationMessage For="@(() => Order.CustomerAddress)" />
+  <button type="submit" disabled="@isSubmitting">Confirm order</button>
+</EditForm>
+
+@code {
+  [Parameter]
+  public Order Order { get; set; }
+
+  [Parameter]
+  public EventCallback<ConfirmedOrder> OnOrderConfirmed { get; set; }
+
+  private bool isSubmitting = false;
+
+  private async Task OnValidSubmit()
+  {
+    isSubmitting = true;
+    var response = await HttpClient.PostAsJsonAsync("api/order", Order);
+    var confirmedOrder = await response.Content.ReadFromJsonAsync<ConfirmedOrder>();
+    await OnOrderConfirmed.InvokeAsync(confirmedOrder);
+  }
+}

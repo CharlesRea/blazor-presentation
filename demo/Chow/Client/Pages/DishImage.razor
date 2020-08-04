@@ -1,0 +1,8 @@
+@using Chow.Shared
+
+<img class="dish-image" src="images/@(Dish.DishId).jpg" alt="@Dish.Name" />
+
+@code {
+  [Parameter]
+  public Dish Dish { get; set; }
+}

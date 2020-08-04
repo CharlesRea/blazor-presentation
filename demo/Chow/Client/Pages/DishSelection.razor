@@ -1,0 +1,36 @@
+﻿@using Chow.Shared
+@inject HttpClient HttpClient
+
+<div class="dish-selection">
+  @foreach (var dish in Dishes)
+  {
+    <MenuDish Dish="@dish" IsSelected="@selectedDishes.Contains(dish)" OnToggleSelected="@OnToggleDishSelected" />
+  }
+  <button class="place-order" disabled="@(selectedDishes.Count == 0)" @onclick="@(() => OnDishesSelected.InvokeAsync(selectedDishes))">
+    Place order
+  </button>
+</div>
+
+@code {
+
+  [Parameter]
+  public IEnumerable<Dish> Dishes { get; set; }
+
+  [Parameter]
+  public EventCallback<ICollection<Dish>> OnDishesSelected { get; set; }
+
+  private readonly ICollection<Dish> selectedDishes = new List<Dish>();
+
+  private void OnToggleDishSelected(Dish dish)
+  {
+    if (selectedDishes.Contains(dish))
+    {
+      selectedDishes.Remove(dish);
+    }
+    else
+    {
+      selectedDishes.Add(dish);
+    }
+  }
+
+}

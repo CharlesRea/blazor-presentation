@@ -81,7 +81,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  font-size: 24px;
+  font-size: 60px;
 }
 
 .container {
@@ -90,21 +90,20 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-width: 100vw;
+  min-height: 100vh;
 }
 
 .hello {
-
+  font-size: 80px;
 }
 
 .current-count {
-  margin-top: 16px;
+  margin-top: 30px;
   margin-bottom: 16px;
 }
 
 button {
-  /*bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">*/
-
-  /*bg-white text-2xl border-b-4 hover:bg-{0}-600 hover:text-white font-bold py-4 px-6 shadow-md*/
   background: #38B2AC;
   color: white;
   padding: 16px;
