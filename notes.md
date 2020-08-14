@@ -6,27 +6,21 @@
 * Run zoom tool
 * Close down Slack, Teams, Discord, Outlook, Skype
 * Turn on silent mode in windows
-* Open slides, IDE, Chrome
+* Open slides, VS Code, Chrome
 * Close Chrome tabs
 * Set resolution
 * Set up timer
 
+VS code:
+* Zen mode - `ctrl + k, d` 
+* Hide menu bar
+* zoom editor, zoom font
+* Disable powershell customisation
+* Open terminal - `ctrl + j`
+* Open sidebar as needed - `ctrl + b`
+* Open Chrome, VS code next to each other. Chrome should be ~800px
+* Set terminal font size to 20
 
-## Talk overview 
-
-Blazor is Microsoft's brand new framework for building client-side web applications.
-So what makes it special, compared to all the other front-end frameworks out there? 
-Blazor has a unique feature: you write the code in C#, which runs in the browser using 
-WebAssembly - with no Javascript involved! In this talk, we'll see how we can write 
-applications using Blazor, and take a look at its syntax and component model. We'll 
-explore how Blazor works under the hood, and how WebAssembly is used to run .NET 
-code within the browser. We'll discuss the advantages and disadvantages of this 
-approach, and get an understanding of when it makes sense to use Blazor.
-
-### Session takeaways
-* Knowledge of how to get started creating Blazor applications
-* Understand how WebAssembly enables running non-Javascript languages in the browser
-* Appreciate when Blazor is a good fit for an application, and when to avoid it
 
 ## Rough timings
 45 mins total:
@@ -43,7 +37,6 @@ approach, and get an understanding of when it makes sense to use Blazor.
 * Who I am, what I do
 * Ghyston
 
-
 ### Set the scene - Web apps without Javascript?
 * Do a lot of full stack web dev, intrigued as to whether we can unify code across frontend and backend
 * eg want to share types across API calls, business logic, validation, etc
@@ -58,43 +51,14 @@ approach, and get an understanding of when it makes sense to use Blazor.
 * Blazor is one of hte newest attempts at this, and very intriguing as it uses Wasm, not JS
 
 ### What is Blazor?
-* New framework from Microsoft, for building rich interactive client-side web apps, written in C#
-* Couple of ways of running - we're going to mostly focus on WebAssembly
+* Do a lot of full stack web dev, intrigued as to whether we can unify code across frontend and backend
+* There's been a few attempts at this, none of which I've found completely painless
+
+* Blazor is a new framework from Microsoft, for building rich interactive client-side web apps, written in C#
 * We're going to see how we can write C# code, and use .NET libraries directly in the browser
 * We'll take a look at what its' like to write a Blazor app, and take a look at how it works under the hood
 
-
-### Let's take a look at it in action
-QQ - strip down demo:
-* Don't render counter by default
-
-* Here's a basic Blazor hello world component
-* Blazor is a component-based framework - so you build up a set of components, eg buttons, form inputs, together into your UI
-* Components are written in `.razor` files
-* Uses the Razor templating language - same as in server side MVC, if you've seen that before
-* Write HTML, but can inject in C# using the `@` symbol
-* Blazor compnonents can have the `@code` block - this is where you define actual logic - state, event handlers, lifecycle methods, business logic, etc
-* This is all compiled down to a C# class
-
-* *Demo running the site - show the demo loading*
-
-* Can compose components. E.g. let's render my Counter component
-* *Add `<Counter />` to index*
-* My counter component maintains some internal state. See how we can bind a method to a DOM event, in this case the onClick event
-* This updates the state, and causes the component to be re-rendered.
-* *Demo Counter*
-
-* Components can have input parameters set - e.g. we could allow customising the Increment amount
-
-
-### More complicated demo
-* Deliveroo clone?
-  * Single restaurant
-  * List of food options - get from API
-  * Add to order button - adds to basket, client side
-  * Address form - shows form components
-  * Map showing where the driver is - shwoing JS interop
-
+### Demo
 
 ### How does it work?
 
@@ -205,6 +169,10 @@ QQ another point here?
 * The framework is opionated. I would say you need to be willing to compromise your designs to do things "the Blazor way". If that's a deal-breaker, avoid it.
 
 * It's an interesting space - look to see improvements over the next few years.
+
+### Where can I learn more?
+ASP.NET docs
+Blazor university
 
 
 ### Questions
