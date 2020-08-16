@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+
+@if (status == OrderStatus.Loading)
+{
+  <div>Loading...</div>
+}
+else if (status == OrderStatus.ChooseDishes)
+{
+  <Menu Dishes="@availableDishes" OnDishesSelected="@OnDishesSelected" />
+}
+else if (status == OrderStatus.OrderDetails)
+{
+  <OrderDetails Order="@order" OnOrderConfirmed="@OnOrderConfirmed" />
+}
+else if (status == OrderStatus.OrderConfirmed)
+{
+  <div class="order-confirmed">Your order is on its way!</div>
+}
+
+@code {
+  private IEnumerable<Dish> availableDishes;
+  private readonly Order order = new Order();
+  private OrderStatus status = OrderStatus.Loading;
+
+  protected override async Task OnInitializedAsync()
+  {
+    availableDishes = await HttpClient.GetFromJsonAsync<IEnumerable<Dish>>("api/menu");
+    status = OrderStatus.ChooseDishes;
+  }
+
+  private void OnDishesSelected(IEnumerable<Dish> dishes)
+  {
+    order.Dishes = dishes;
+    status = OrderStatus.OrderDetails;
+  }
+
+  private void OnOrderConfirmed()
+  {
+    status = OrderStatus.OrderConfirmed;
+  }
+}

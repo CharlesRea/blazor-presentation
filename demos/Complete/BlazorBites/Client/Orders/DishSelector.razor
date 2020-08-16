@@ -1,0 +1,30 @@
+<div class="dish">
+  <DishImage Dish="@Dish" />
+  <div class="dish-details">
+    <div class="dish-name">@Dish.Name</div>
+    <div class="dish-price">£@Dish.Price</div>
+  </div>
+  <button class="@(IsSelected ? "dish-selected" : "")" @onclick="@(() => OnToggleSelected.InvokeAsync(Dish))">
+    @if (IsSelected)
+    {
+      <RemoveIcon />
+    }
+    else
+    {
+      <AddIcon />
+    }
+  </button>
+</div>
+
+@code {
+
+  [Parameter]
+  public Dish Dish { get; set; }
+
+  [Parameter]
+  public bool IsSelected { get; set; }
+
+  [Parameter]
+  public EventCallback<Dish> OnToggleSelected { get; set; }
+
+}

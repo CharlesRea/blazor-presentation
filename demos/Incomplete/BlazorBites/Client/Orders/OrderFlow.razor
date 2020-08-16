@@ -1,0 +1,20 @@
+﻿@page "/"
+
+@if (status == OrderStatus.Loading)
+{
+  <div>Loading...</div>
+}
+else if (status == OrderStatus.ChooseDishes) {
+  <div>TODO: Choose dishes</div>
+}
+else if (status == OrderStatus.OrderDetails) {
+  <div>TODO: Enter order details</div>
+}
+else if (status == OrderStatus.OrderConfirmed) {
+  <div>Your order is on it's way!</div>
+}
+
+@code {
+  private readonly Order order = new Order();
+  private OrderStatus status = OrderStatus.Loading;
+}

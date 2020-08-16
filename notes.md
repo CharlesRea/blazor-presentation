@@ -1,59 +1,17 @@
 # Blazor Presentation
 
-## Pre-talk setup
-
-* Restart PC
-* Run zoom tool
-* Close down Slack, Teams, Discord, Outlook, Skype
-* Turn on silent mode in windows
-* Open slides, VS Code, Chrome
-* Close Chrome tabs
-* Set resolution
-* Set up timer
-
-VS code:
-* Zen mode - `ctrl + k, d` 
-* Hide menu bar
-* zoom editor, zoom font
-* Disable powershell customisation
-* Open terminal - `ctrl + j`
-* Open sidebar as needed - `ctrl + b`
-* Open Chrome, VS code next to each other. Chrome should be ~800px
-* Set terminal font size to 20
-
-
-## Rough timings
-45 mins total:
-* 5 mins intro
-* 15 mins demo
-* 10 mins - how it works
-* 5 mins - wider ecosystem, other rendering modes
-* 5 mins - downsides, when to use it
-* 5 mins questions
-
-## Talk notes
-
 ### Introduction
-* Who I am, what I do
-* Ghyston
+* My name's Charles, I'm a technical lead at Ghyston, a software consultancy based up in Bristol.
+* Today I'm going to talk to you about Blazor, and our experiences of using it to build web applications in C#
+* We're going to see how to build Blazor apps, how it works under the hood and what it's actually like to build real projects using it and when it's a good fit.
 
 ### Set the scene - Web apps without Javascript?
 * Do a lot of full stack web dev, intrigued as to whether we can unify code across frontend and backend
 * eg want to share types across API calls, business logic, validation, etc
 * Traditionally if we've wanted to write interactive web apps, have needed to use JS - only language that runs in the browser
-* Several attempts at compiling langauges down to JS - Typescript, Fable, Kotlin
-* Things I've learnt I want from that:
-  * Easy to share code between client and server
-  * Large ecosystem - don't want to reinvent the wheel
-  * Ease of dev experience - speed of dev cycle, ease of debugging, etc
-  * Good UI model
-  * Easy JS interop
-* Blazor is one of hte newest attempts at this, and very intriguing as it uses Wasm, not JS
+* WebAssembly gives us an alternative
 
 ### What is Blazor?
-* Do a lot of full stack web dev, intrigued as to whether we can unify code across frontend and backend
-* There's been a few attempts at this, none of which I've found completely painless
-
 * Blazor is a new framework from Microsoft, for building rich interactive client-side web apps, written in C#
 * We're going to see how we can write C# code, and use .NET libraries directly in the browser
 * We'll take a look at what its' like to write a Blazor app, and take a look at how it works under the hood
@@ -77,14 +35,13 @@ VS code:
 * It's got a real focus on performance - it uses a compact binary format, doesn't need to be parsed and interpreted by the browser, can be close to native speed.
 * Similarly to physical assembly languages, there's a corresponding text format
 * It's stack based - operations push and pop values on the stack
-
 * We can't access the DOM or browser APIs directly - have to go via JS interop.
 
 * It's designed to be something we can compile to
 * Lots of languages can compile to it - C, Rust
 * How do we get C# running on this?
 
-* There's been work by the Mono team for several years to get .NET running on Wasm
+* First need to pick a .NET runtime. THe mono team have been working on getting Mono running on Wasm for a while.
 * We might think we'll just compile our code directly down to WebAssembly
 * This AOT compilation is hard
   * Problems like file size, build speed
@@ -95,6 +52,14 @@ VS code:
 * Then the runtime can execute your normal compiled code
 * Your app code is interpretted - no JIT. Does have performacne implications
 * Demo in devtools
+
+
+### Overall tech stack
+* Underpinning everything: WebAssembly
+* Used to execute Mono runtime
+* That executes the Blazor UI framework, which is responsible for actually figuring out how to update the DOM
+* Blazor is responsible for transforming the Razor files we write into standard C# classes
+* Blazor will monitor for events that cause a state change, and then figure out how the DOM should be updated - essentially uses a virtual DOM
 
 ### Other rendering modes
 * Blazor can run on the server. Instead of running your .NET code in the browser via WebAssembly, this mode runs it on a normal .NET server, and communicates DOM updates over a SignaR websockets connection. Removes the need for Wasm, but means all your interactivity must go via a server, so latency and scaling concerns
@@ -107,7 +72,8 @@ VS code:
 * So for example, what about rendering native mobile controls? Or using Xamarin? There are some highly experimental demos from the Blazor team out there.
 
 
-### Pros
+### What's it like to use?
+* Overall, it definitely achieves the aims of being able to write UI frameworks using C#
 * There's a lot of good about it, it's quite pleasurable to use
 * This is one of the best implementations of a non-JS language based web framework I've seen, it gets a lot of things right
 * It's easy to pick up, and is a good choice for building interactive applications
@@ -124,7 +90,6 @@ VS code:
 * Hooks into the .NET ecosystem and standard library
   * Same primitives as server-side ASP.NET. Can re-use DI, validation, logging.
 
-QQ another point here?
 
 ### Downsides
 * Development experience is a little rough
@@ -174,8 +139,6 @@ QQ another point here?
 ASP.NET docs
 Blazor university
 
-
-### Questions
 
 ### Other notes
 * 5.0 roadmap: https://github.com/dotnet/aspnetcore/issues/21514, https://visualstudiomagazine.com/articles/2020/05/22/blazor-future.aspx

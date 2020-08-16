@@ -19,7 +19,7 @@
 `<Counter Increment="10" />`
 
 
-# Charles' Chow
+# BlazorBites
 
 Let's build a takeaway ordering site
 
@@ -27,7 +27,7 @@ We're going to get a list of dish options from an API server, let the user choos
 This example is a little different - I'm hosting blazor from within a server. I haven't had to change anything on the Blazor side for this to work.
 
 ## Fetch dishes
-In `index.razor`:
+In `OrderFlow.razor`:
 
 Inject HttpClient:
 ```csharp
@@ -36,6 +36,8 @@ Inject HttpClient:
 
 Fetch data when the component first renders:
 ```csharp
+private IEnumerable<Dish> availableDishes;
+
  protected override async Task OnInitializedAsync()
   {
     availableDishes = await HttpClient.GetFromJsonAsync<IEnumerable<Dish>>("api/menu");
@@ -52,38 +54,32 @@ else if (status == OrderStatus.ChooseDishes)
 ```
 
 ## Display dish selection
-Add `DishSelection.razor` to contain the selection logic
+Add `Menu.razor` to contain the selection logic
 
 Add a parameter to accept the list of dishes:
 ```csharp
-@using Chow.Shared
-
-@code {
-
-  [Parameter]
-  public IEnumerable<Dish> Dishes { get; set; }
-
-}
+[Parameter]
+public IEnumerable<Dish> Dishes { get; set; }
 ```
 
-Render the existing `MenuDish` component for each dish:
+Render the existing `DishSelector` component for each dish:
 ```csharp
 <div class="dish-selection">
   @foreach (var dish in Dishes)
   {
-    <MenuDish Dish="@dish" />
+    <DishSelector Dish="@dish" />
   }
 </div>
 ```
 
-Render the `DishSelection` in `index.razor`
+Render the `Menu` in `index.razor`
 ```csharp
-  <DishSelection Dishes="@availableDishes" />
+  <Menu Dishes="@availableDishes" />
 ```
 
 ## Allow selecting dishes
 
-Store selected dishes in the `DishSelection`'s internal state
+Store selected dishes in the `Menu`'s internal state
 ```csharp
   private readonly ICollection<Dish> selectedDishes = new List<Dish>();
 
@@ -100,13 +96,13 @@ Store selected dishes in the `DishSelection`'s internal state
   }
 ```
 
-Wire up the `MenuDish` to update our state:
+Wire up the `DishSelector` to update our state:
 ```csharp
-<MenuDish Dish="@dish" IsSelected="@selectedDishes.Contains(dish)" OnToggleSelected="@OnToggleDishSelected" />
+<DishSelector Dish="@dish" IsSelected="@selectedDishes.Contains(dish)" OnToggleSelected="@OnToggleDishSelected" />
 ```
 
 ## Confirm dishes
-Add an `EventCallback` so that the `DishSelection` can communicate back to it's parent when the dishes have been selected:
+Add an `EventCallback` so that the `Menu` can communicate back to it's parent when the dishes have been selected:
 ```csharp
   [Parameter]
   public EventCallback<ICollection<Dish>> OnDishesSelected { get; set; }
@@ -114,12 +110,15 @@ Add an `EventCallback` so that the `DishSelection` can communicate back to it's 
 
 Add a button to invoke this callback:
 ```csharp
-<button class="place-order" disabled="@(selectedDishes.Count == 0)" @onclick="@(() => OnDishesSelected.InvokeAsync(selectedDishes))">
+<button
+   class="place-order"
+   disabled="@(selectedDishes.Count == 0)" 
+   @onclick="@(() => OnDishesSelected.InvokeAsync(selectedDishes))">
     Place order
 </button>
 ```
 
-Make the `index.razor` receive this callback and store the selected dishes
+Make the `OrderFlow.razor` receive this callback and store the selected dishes
 ```csharp
   private readonly ICollection<Dish> selectedDishes = new List<Dish>();
 
@@ -131,15 +130,13 @@ Make the `index.razor` receive this callback and store the selected dishes
 ```
 
 ```csharp
-  <DishSelection Dishes="@availableDishes" OnDishesSelected="@OnDishesSelected" />
+  <Menu Dishes="@availableDishes" OnDishesSelected="@OnDishesSelected" />
 ```
 
 
 ## Order details form
 Create an `OrderDetails.razor` file
 ```csharp
-@using Chow.Shared
-
 <EditForm Model="Order">
   <label>Your name:
     <InputText @bind-Value="@Order.CustomerName" />
@@ -157,7 +154,7 @@ Create an `OrderDetails.razor` file
 }
 ```
 
-Make `index.razor` display this:
+Make `OrderFlow.razor` display this:
 ```csharp
 else if (status == OrderStatus.OrderDetails)
 {
@@ -171,11 +168,11 @@ Allow submitting the order:
 
 ...
 
-<EditForm Model="Order" OnValidSubmit="@OnValidSubmit">
+<EditForm Model="@Order" OnValidSubmit="@OnValidSubmit">
 
 ...
 
-<button type="submit" disabled="@isSubmitting">Confirm order</button>
+<button type="submit">Confirm order</button>
 
 ```
 
@@ -183,7 +180,6 @@ Allow submitting the order:
 
   private async Task OnValidSubmit()
   {
-    isSubmitting = true;
     var response = await HttpClient.PostAsJsonAsync("api/order", Order);
   }
   ```
@@ -210,26 +206,21 @@ Demo not being able to submit invalid data
 ## Handle succesful order
 ```csharp
   [Parameter]
-  public EventCallback<ConfirmedOrder> OnOrderConfirmed { get; set; }
+  public EventCallback OnOrderConfirmed { get; set; }
 
 
   private async Task OnValidSubmit()
   {
-    isSubmitting = true;
     var response = await HttpClient.PostAsJsonAsync("api/order", Order);
-    var confirmedOrder = await response.Content.ReadFromJsonAsync<ConfirmedOrder>();
-    await OnOrderConfirmed.InvokeAsync(confirmedOrder);
+    await OnOrderConfirmed.InvokeAsync(null);
   }
 ```
 
-Make `index.razor` display the completed order:
+Make `OrderFlow.razor` display the completed order:
 ```csharp
-  private ConfirmedOrder confirmedOrder = null;
-
-  private void OnOrderConfirmed(ConfirmedOrder confirmedOrderResponse)
+  private void OnOrderConfirmed()
   {
     status = OrderStatus.OrderConfirmed;
-    confirmedOrder = confirmedOrderResponse;
   }
 ```
 
@@ -240,6 +231,6 @@ else if (status == OrderStatus.OrderDetails)
 }
 else if (status == OrderStatus.OrderConfirmed)
 {
-  <div class="order-confirmed">Your order is on its way, and should be with you in @confirmedOrder.ExpectedDeliveryMinutes minutes</div>
+  <div class="order-confirmed">Your order is on its way!</div>
 }
 ```

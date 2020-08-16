@@ -1,0 +1,32 @@
+@inject HttpClient HttpClient
+
+<EditForm Model="Order" OnValidSubmit="@OnValidSubmit">
+  <DataAnnotationsValidator />
+  <label>Your name:
+    <InputText @bind-Value="@Order.CustomerName" />
+  </label>
+  <ValidationMessage For="@(() => Order.CustomerName)" />
+  <label>
+    Your address:
+    <InputText @bind-Value="@Order.CustomerAddress" />
+  </label>
+  <ValidationMessage For="@(() => Order.CustomerAddress)" />
+  <button type="submit" disabled="@isSubmitting">Confirm order</button>
+</EditForm>
+
+@code {
+  [Parameter]
+  public Order Order { get; set; }
+
+  [Parameter]
+  public EventCallback OnOrderConfirmed { get; set; }
+
+  private bool isSubmitting = false;
+
+  private async Task OnValidSubmit()
+  {
+    isSubmitting = true;
+    await HttpClient.PostAsJsonAsync("api/order", Order);
+    await OnOrderConfirmed.InvokeAsync(null);
+  }
+}
