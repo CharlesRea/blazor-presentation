@@ -6,25 +6,20 @@
 * We're going to see how to build Blazor apps, how it works under the hood and what it's actually like to build real projects using it and when it's a good fit.
 
 ### Set the scene - Web apps without Javascript?
-* Do a lot of full stack web dev, intrigued as to whether we can unify code across frontend and backend
-* eg want to share types across API calls, business logic, validation, etc
-* Traditionally if we've wanted to write interactive web apps, have needed to use JS - only language that runs in the browser
-* WebAssembly gives us an alternative
-
-### What is Blazor?
-* Blazor is a new framework from Microsoft, for building rich interactive client-side web apps, written in C#
-* We're going to see how we can write C# code, and use .NET libraries directly in the browser
-* We'll take a look at what its' like to write a Blazor app, and take a look at how it works under the hood
-
-### Demo
-
-### How does it work?
+* Traditional building blocks of the web
+  * HTML - content
+  * CSS - styling
+  * JS - interactivity
+* Forced to use JS because need a language that runs in the browser
+* Some downsides:
+  * JS is good, but not the right tool for every job
+  * It's not a high performance language - interpreted
+  * Means we can't reuse any logic that we might already have in our backend language.
+  * eg want to share types across API calls, business logic, validation, etc
+* Worked around that by compiling down to JS - eg Typescript, Kotlin, Fable for F#
+* WebAssembly gives us a true alternative
 
 ### What is Web Assembly?
-* Historically, if you want to run code in the browser you have to use JS. We've ended up with various other
-  languages featuring compilation down to JS - see Typescript, Coffeescript, Kotlin, Fable for F#
-* That works well, but is limited - not everything maps to JS well, it's complicated to do
-
 * Wouldn't it be great if we could do something more like building a native app, and compile our code down to
   some sort of machine / assembly code that runs in the browser?
 * We couldn't compile down to native code directly - we don't know what platform the code will run on
@@ -37,18 +32,32 @@
 * It's stack based - operations push and pop values on the stack
 * We can't access the DOM or browser APIs directly - have to go via JS interop.
 
-* It's designed to be something we can compile to
-* Lots of languages can compile to it - C, Rust
-* How do we get C# running on this?
+
+### How can we build a full UI based app?
+* How do we go from basic function invocations, to creating a UI?
+* Need to do all DOM interop via JS, so can't really use Wasm only
+* It's going to be too hard to do this directly - need a UI framework
+
+### What is Blazor?
+* Blazor is a new framework from Microsoft, for building rich interactive client-side web apps, written in C#
+* We're going to see how we can write C# code, and use .NET libraries directly in the browser
+* We'll take a look at what its' like to write a Blazor app, and take a look at how it works under the hood
+
+### Demo
+
+### How does it work?
+* How do we get C# running on WebAssembly?
 
 * First need to pick a .NET runtime. THe mono team have been working on getting Mono running on Wasm for a while.
+
 * We might think we'll just compile our code directly down to WebAssembly
 * This AOT compilation is hard
   * Problems like file size, build speed
   * https://github.com/mono/mono/issues/10222 - Blazor AOT issue
   * https://github.com/dotnet/aspnetcore/issues/5466#issuecomment-639806998 - Blazor AOT issue
 
-* Instead, the Mono team have done work to compile the runtime itself down to webassembly
+* Let's think about how C# works - our code is compiled to an intermediate language, which is JITed to machine code at runtime by the .NET runtime
+* So, instead of compiling the C# code directly to Wasm - we can get the runtime working on Wasm
 * Then the runtime can execute your normal compiled code
 * Your app code is interpretted - no JIT. Does have performacne implications
 * Demo in devtools
